@@ -27,10 +27,8 @@
 #include "qtextparserelement.h"
 #include "qtextparserline.h"
 
-#include <QStringList>
 #include <QString>
 #include <QVector>
-#include <QList>
 
 
 class QTextParser
