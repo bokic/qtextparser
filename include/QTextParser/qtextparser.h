@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "qtextparserlanguagedefinitiontoken.h"
-#include "qtextparserlanguagedefinition.h"
-#include "qtextparserelement.h"
-#include "qtextparserline.h"
+#include <QTextParser/QTextParserLanguageDefinitionToken>
+#include <QTextParser/QTextParserLanguageDefinition>
+#include <QTextParser/QTextParserElement>
+#include <QTextParser/QTextParserLine>
 
 #include <QString>
 #include <QVector>

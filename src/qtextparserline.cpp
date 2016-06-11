@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-#include "qtextparserline.h"
+#include <QTextParser/QTextParserLine>
 
 
 QTextParserLine::QTextParserLine()

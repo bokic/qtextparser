@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "qtextparserlanguagedefinitiontoken.h"
+#include <QTextParser/QTextParserLanguageDefinitionToken>
 
 #include <QStringList>
 #include <QString>

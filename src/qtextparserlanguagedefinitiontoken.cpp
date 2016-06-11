@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-#include "qtextparserlanguagedefinitiontoken.h"
+#include <QTextParser/QTextParserLanguageDefinitionToken>
 
 
 QTextParserLanguageDefinitionToken::QTextParserLanguageDefinitionToken()

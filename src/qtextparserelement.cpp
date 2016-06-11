@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-#include "qtextparserelement.h"
+#include <QTextParser/QTextParserElement>
 
 
 QTextParserElement::QTextParserElement()

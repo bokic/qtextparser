@@ -8,6 +8,9 @@ QT      = core xml
 TEMPLATE=lib
 DESTDIR = $$_PRO_FILE_PWD_/bin
 
+DEPENDPATH  += include
+INCLUDEPATH += include
+
 CONFIG(release, debug|release) {
     TARGET = Qt5TextParser
 } else {

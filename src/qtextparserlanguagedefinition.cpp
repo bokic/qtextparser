@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-#include "qtextparserlanguagedefinition.h"
+#include <QTextParser/QTextParserLanguageDefinition>
 
 
 QTextParserLanguageDefinition::QTextParserLanguageDefinition()

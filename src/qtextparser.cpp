@@ -20,9 +20,9 @@
 **
 ****************************************************************************/
 
-#include "qtextparser.h"
-
 #include <limits.h>
+
+#include <QTextParser/QTextParser>
 
 #include <QDomDocument>
 #include <QStringList>
