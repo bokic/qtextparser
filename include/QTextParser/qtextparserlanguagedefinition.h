@@ -2,8 +2,7 @@
 **
 ** Author: Boris Barbulovski(bbarbulovski@gmail.com)
 **
-** This file is part of the MKFusion(http://mkfusion.bokicsoft.com/ or
-** https://github.com/bokic/mkfusion/) project.
+** This file is part of the QTextParser(https://github.com/bokic/qtextparser) library.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 **
