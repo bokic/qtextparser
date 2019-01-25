@@ -1,10 +1,10 @@
-<language Name="ColdFusion" EmptySegmentsLanguage="HTML" CaseSensitivity="false" DefaultFileExtensions="cfm,cfc" StartsWith="StartTag,EndTag,Comment">
+<language Name="ColdFusion" EmptySegmentsLanguage="HTML" CaseSensitivity="false" DefaultFileExtensions="cfm,cfc" StartsWith="ScriptTag,OutputTag,StartTag,EndTag,Comment">
 	<tokens>
-		<token Name="StartTag" StartString="&lt;cfscript&gt;" EndString="&lt;/cfscript&gt;" OnlyStartTag="true">
+		<token Name="ScriptTag" StartString="&lt;cfscript&gt;" EndString="&lt;/cfscript&gt;" OnlyStartTag="true" MultiLine="true">
 			<nested_tokens names="ScriptExpression" />
 		</token>
-		<token Name="StartTag" StartString="&lt;cfoutput&gt;" EndString="&lt;/cfoutput&gt;" OnlyStartTag="true" ExcludeTopLevelChild="true">
-			<nested_tokens names="OutputExpression" />
+		<token Name="OutputTag" StartString="&lt;cfoutput&gt;" EndString="&lt;/cfoutput&gt;" OnlyStartTag="true" MultiLine="true" ExcludeTopLevelChild="true">
+			<nested_tokens names="OutputExpression,StartTag,EndTag,Comment" />
 		</token>
 		<token Name="StartTag" StartString="&lt;cf[a-z0-9_]+" EndString="\/?&gt;" MultiLine="true">
 			<nested_tokens names="Expression" />
@@ -56,6 +56,6 @@
 		<token Name="CodeBlock" StartString="\{" EndString="\}" MultiLine="true">
 			<nested_tokens names="Expression" />
 		</token>
-		<token Name="Keyword" TokenString="(\bvar\b|\bfunction\b|\bthis\b)" />
+		<token Name="Keyword" TokenString="(\bvar\b|\bfunction\b|\bthis\try\catch\b)" />
 	</tokens>
 </language>
