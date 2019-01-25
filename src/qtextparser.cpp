@@ -160,11 +160,6 @@ void QTextParser::loadParserDefinitionsFromDir(const QString &dir)
 
                     for(int source = 0; source < def.tokens.count(); source++)
                     {
-                        if (source == target)
-                        {
-                            continue;
-                        }
-
                         if (nestedTokens.contains(def.tokens[source].name))
                         {
                             def.tokens[target].nestedTokens.append(source);
