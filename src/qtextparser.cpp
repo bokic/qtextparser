@@ -158,12 +158,23 @@ void QTextParser::loadParserDefinitionsFromDir(const QString &dir)
                         continue;
                     }
 
-                    for(int source = 0; source < def.tokens.count(); source++)
+                    for(const auto &nestedTokenStr : nestedTokens)
                     {
-                        if (nestedTokens.contains(def.tokens[source].name))
+                        int id = -1;
+
+                        for(int c = 0; c < def.tokens.count(); c++)
                         {
-                            def.tokens[target].nestedTokens.append(source);
+                            const auto &tokenDef = def.tokens.at(c);
+
+                            if (tokenDef.name == nestedTokenStr)
+                            {
+                                id = c;
+
+                                break;
+                            }
                         }
+
+                        def.tokens[target].nestedTokens.append(id);
                     }
                 }
 
