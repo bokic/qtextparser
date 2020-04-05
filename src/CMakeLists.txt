@@ -19,10 +19,6 @@ include_directories(../include)
 
 add_library(qtextparser SHARED
     qtextparser.cpp
-    qtextparserlanguagedefinition.cpp
-    qtextparserline.cpp
-    qtextparserelement.cpp
-    qtextparserlanguagedefinitiontoken.cpp
 )
 
 target_link_libraries(qtextparser

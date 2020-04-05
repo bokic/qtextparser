@@ -21,7 +21,6 @@
 
 
 #include <QTextParser/QTextParser>
-#include <climits>
 
 #include <QDomDocument>
 #include <QStringList>
@@ -32,6 +31,9 @@
 #include <QFile>
 #include <QList>
 #include <QDir>
+
+#include <climits>
+
 
 static QList<QTextParserLanguageDefinition> languageDefinitions;
 
@@ -498,17 +500,11 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
                     }
 
                     ret.m_Type = nToken;
-#ifdef DEBUG_QTEXTPARSER
-                    ret.m_TypeDebug = token.name;
-#endif
                 }
                 else
                 {
                     ret.m_Text = "End segment NOT found!";
                     ret.m_Type = -1;
-#ifdef DEBUG_QTEXTPARSER
-                    ret.m_TypeDebug = "Error -1";
-#endif
                 }
                 break;
             }
@@ -548,9 +544,6 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
                 ret.m_EndLine = start_line;
                 ret.m_EndColumn = start_column;
                 ret.m_Type = nToken;
-#ifdef DEBUG_QTEXTPARSER
-                ret.m_TypeDebug = token.name;
-#endif
                 if (token.IgnoreIfOnlyOneChild)
                 {
                     if (ret.m_ChildElements.count() == 1)
@@ -564,9 +557,6 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
             {
                 ret.m_Text = "End segment NOT found!";
                 ret.m_Type = -1;
-#ifdef DEBUG_QTEXTPARSER
-                ret.m_TypeDebug = "Error -1";
-#endif
             }
         }
         else if ((token.startString.isEmpty())&&(token.endString.isEmpty())&&(!token.tokenString.isEmpty())&&(token.nestedTokens.count() == 0))
@@ -593,9 +583,6 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
                 ret.m_EndLine = start_line;
                 ret.m_EndColumn = start_column;
                 ret.m_Type = nToken;
-#ifdef DEBUG_QTEXTPARSER
-                ret.m_TypeDebug = token.name;
-#endif
                 break;
             }
         }

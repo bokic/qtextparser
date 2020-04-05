@@ -1,3 +1,5 @@
+#pragma once
+
 /****************************************************************************
 **
 ** Author: Boris Barbulovski(bbarbulovski@gmail.com)
@@ -19,18 +21,103 @@
 **
 ****************************************************************************/
 
-#pragma once
-
-#include <QTextParser/QTextParserLanguageDefinitionToken>
-#include <QTextParser/QTextParserLanguageDefinition>
-#include <QTextParser/QTextParserElement>
-#include <QTextParser/QTextParserLine>
-
 #include <QStringList>
 #include <QString>
 #include <QVector>
+#include <QRegExp>
 #include <QList>
 
+
+class QTextParserLanguageDefinitionToken
+{
+public:
+    QTextParserLanguageDefinitionToken() = default;
+    QTextParserLanguageDefinitionToken(const QTextParserLanguageDefinitionToken &other) = default;
+
+    inline QTextParserLanguageDefinitionToken &operator=(QTextParserLanguageDefinitionToken &&other) = default;
+    inline QTextParserLanguageDefinitionToken &operator=(const QTextParserLanguageDefinitionToken &other) = default;
+
+    QString name;
+    QRegExp startString;
+    QRegExp endString;
+    QRegExp tokenString;
+    bool searchEndStringLast;
+    bool immediateStartString;
+    bool onlyStartTag;
+    bool excludeTopLevelChild;
+    bool IgnoreIfOnlyOneChild;
+    bool MultiLine;
+    QVector<int> nestedTokens;
+};
+
+class QTextParserLanguageDefinition
+{
+public:
+    QTextParserLanguageDefinition() = default;
+    QTextParserLanguageDefinition(const QTextParserLanguageDefinition &other) = default;
+
+    inline QTextParserLanguageDefinition &operator=(QTextParserLanguageDefinition &&other) = default;
+    inline QTextParserLanguageDefinition &operator=(const QTextParserLanguageDefinition &other) = default;
+
+    QString languageName;
+    Qt::CaseSensitivity caseSensitivity;
+    QStringList defaultExtensions;
+    QVector<QTextParserLanguageDefinitionToken> tokens;
+    QVector<int> startsWith;
+};
+
+class QTextParserElement
+{
+public:
+    QTextParserElement() = default;
+    QTextParserElement(const QTextParserElement &other) = default;
+
+    inline QTextParserElement &operator=(QTextParserElement &&other) = default;
+    inline QTextParserElement &operator=(const QTextParserElement &other) = default;
+
+    inline QString asString() const {
+        return QString("%1(%2) => %3:%4 - %5:%6").arg(
+                    m_Text,
+                    QString::number(m_Type),
+                    QString::number(m_StartLine),
+                    QString::number(m_StartColumn),
+                    QString::number(m_EndLine),
+                    QString::number(m_EndColumn));
+    }
+
+    int m_Type = -1;
+    QString m_Text;
+    int m_StartLine = -1;
+    int m_StartColumn = -1;
+    int m_EndLine = -1;
+    int m_EndColumn = -1;
+    QList<QTextParserElement> m_ChildElements;
+};
+
+class QTextParserLine
+{
+public:
+    enum QTextParserLineType
+    {
+        QTextParserLineTypeNoEndLine,
+        QTextParserLineTypeCREndLine,
+        QTextParserLineTypeLFEndLine,
+        QTextParserLineTypeCRLFEndLine,
+        QTextParserLineTypeLFCREndLine
+    };
+
+    QTextParserLine() = default;
+    QTextParserLine(const QTextParserLine &other) = default;
+
+    inline QTextParserLine &operator=(QTextParserLine &&other) = default;
+    inline QTextParserLine &operator=(const QTextParserLine &other) = default;
+
+    QString text;
+    QTextParserLineType type;
+};
+
+typedef QList<QTextParserElement> QTextParserElements;
+typedef QList<QTextParserLine> QTextParserLines;
 
 class QTextParser
 {
