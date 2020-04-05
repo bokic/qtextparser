@@ -6,6 +6,9 @@
 		<token Name="OutputTag" StartString="&lt;cfoutput&gt;" EndString="&lt;/cfoutput&gt;" OnlyStartTag="true" MultiLine="true" ExcludeTopLevelChild="true">
 			<nested_tokens names="OutputExpression,StartTag,EndTag,Comment" />
 		</token>
+		<token Name="StartQueryTag" StartString="&lt;cfquery[a-z0-9_]+" EndString="\/?&gt;" MultiLine="true">
+			<nested_tokens names="StartTag,EndTag,Comment,SharpExpression" />
+		</token>		
 		<token Name="StartTag" StartString="&lt;cf[a-z0-9_]+" EndString="\/?&gt;" MultiLine="true">
 			<nested_tokens names="Expression" />
 		</token>
@@ -32,8 +35,9 @@
 			<nested_tokens names="SingleString,DoubleString,Separator,CodeBlock,ScriptComment,ExpressionEnd,Number,Boolean,Operator,ObjectMember,Keyword,Function,Object,Variable,SubExpression,VariableIndex" />
 		</token>
 		<token Name="OutputExpression" ImmediateStart="true" MultiLine="true">
-			<nested_tokens names="Tag,EndTag,Comment,SharpExpression" />
+			<nested_tokens names="ScriptTag,OutputTag,StartTag,EndTag,Comment,SharpExpression" />
 		</token>
+		<token Name="BlockComment" StartString="/\*" EndString="\*/" MultiLine="true" />
 		<token Name="ScriptComment" TokenString="//.*"/>
 		<token Name="ExpressionEnd" TokenString=";" />
 		<token Name="Number" TokenString="[-+]?\b[0-9]*\.?[0-9]+\b" />
@@ -50,12 +54,12 @@
 		<token Name="SubExpression" StartString="(" EndString=")" MultiLine="true">
 			<nested_tokens names="Expression" />
 		</token>
-		<token Name="VariableIndex" StartString="[" EndString="]" MultiLine="true">
+		<token Name="VariableIndex" StartString="\[" EndString="\]" MultiLine="true">
 			<nested_tokens names="Expression" />
 		</token>
 		<token Name="CodeBlock" StartString="\{" EndString="\}" MultiLine="true">
-			<nested_tokens names="Expression" />
+			<nested_tokens names="ScriptExpression" />
 		</token>
-		<token Name="Keyword" TokenString="(\bvar\b|\bfunction\b|\bthis\try\catch\b)" />
+		<token Name="Keyword" TokenString="(\bvar\b|\bfunction\b|\bthis\b|try\b|\bcatch\b|\bif\b|\bthen\b|\belse\b)" />
 	</tokens>
 </language>
