@@ -3,60 +3,93 @@
         <!-- Level 1 DONE -->
         <token Name="CFMLStartTag" StartString="&lt;(cf\s*\w+)\s*">
             <merge_children StripWhitespaceFromName="true">
-                <children Name="cfoutput" FromToken="cfoutput_StartTag"/>
-                <children Name="cfquery" FromToken="cfquery_StartTag"/>
-                <children Name="cfscript" FromToken="cfscript_StartTag"/>
-                <children Name="cfset,cf_other" FromToken="ExpressionStartTag"/>
-                <children Name="^cf_" NameIsRegex="true" FromToken="CustomStartTag"/>
-                <children FromToken="CfKeyValueStartTag"/>
+                <children Name="cfoutput" FromToken="cfoutput_StartTag" />
+                <children Name="cfquery" FromToken="cfquery_StartTag" />
+                <children Name="cfscript" FromToken="cfscript_StartTag" />
+                <children Name="^cf_" NameIsRegex="true" FromToken="CustomStartTag" />
+                <children FromToken="CfStandardStartTag" />
             </merge_children>
         </token>
-        <token Name="CFMLEndTag" StartString="&lt;/(cf\s*\w+)\s*&gt;" CloseToken="CFMLStartTag" />
+        <token Name="CFMLEndTag" StartString="&lt;\/(cf\s*\w+)\s*&gt;" CloseToken="CFMLStartTag" />
         <token Name="CFMLComment" StartString="&lt;!---" EndString="---&gt;" MultiLine="true" CanHaveTextInside="true">
             <nested_tokens names="CFMLComment" />
         </token>
 
-        <!-- Level 2 -->
-        <token Name="cfoutput_StartTag" MultiLine="true" />
-        <token Name="cfquery_StartTag" MultiLine="true" />
-        <token Name="cfscript_StartTag" MultiLine="true" />
-        <token Name="ExpressionStartTag" MultiLine="true" />
-        <token Name="CustomStartTag" MultiLine="true" />
-        <token Name="CfKeyValueStartTag" MultiLine="true" />
+        <!-- Level 2 DONE -->
+        <token Name="cfoutput_StartTag" StartString="&lt;(cf\s*output)\s*" EndString="\/?&gt;" MultiLine="true">
+            <nested_tokens names="Expression" />
+            <push_and_continue_with_tokens names="CFMLStartTag,CFMLEndTag,CFMLComment,SharpCharacter,SharpExpression" />
+        </token>
+        <token Name="cfquery_StartTag" StartString="&lt;(cf\s*query)\s*" EndString="\/?&gt;" MultiLine="true">
+            <nested_tokens names="Expression" />
+            <push_and_continue_with_tokens names="CFMLStartTag,CFMLEndTag,CFMLComment,SharpCharacter,SharpExpression" />
+        </token>
+        <token Name="cfscript_StartTag" StartString="&lt;(cf\s*script)\s*" EndString="\/?&gt;" MultiLine="true">
+            <nested_tokens names="Expression" />
+            <push_and_continue_with_tokens names="ScriptExpression" />
+        </token>
+        <token Name="CustomStartTag" StartString="&lt;(cf_\w+)\s*" EndString="\/?&gt;" MultiLine="true">
+            <nested_tokens names="Expression" />
+            <push_and_continue_with_tokens names="CFMLStartTag,CFMLEndTag,CFMLComment,SharpCharacter,SharpExpression" />
+        </token>
+        <token Name="CfStandardStartTag" StartString="&lt;(cf\w+)\s*" EndString="\/?&gt;" MultiLine="true">
+            <nested_tokens names="Expression" />
+            <push_and_continue_with_tokens names="CFMLStartTag,CFMLEndTag,CFMLComment,SharpCharacter,SharpExpression" />
+        </token>
 
-        <!-- Level 3 -->
-        <token Name="sharptext" />
-        <token Name="cftagexpression" />
-        <token Name="cftagkeyvalue" />
+        <!-- Level 3 DONE -->
+		<token Name="SingleQuoteCharacter" TokenString="&apos;&apos;" />
+		<token Name="DoubleQuoteCharacter" TokenString="&quot;&quot;" />
+        <token Name="SharpCharacter" TokenString="##" />
+        <token Name="SharpExpression" StartString="#" EndString="#" MultiLine="true">
+			<nested_tokens names="Expression" />
+		</token>
 
-        <!-- Level 4 -->
-        <token Name="doublesharp" />
-        <token Name="sharpexpression" />
+        <!-- Level 4 DONE -->
+        <token Name="Expression" MultiLine="true" IgnoreIfOnlyOneChild="true">
+			<nested_tokens names="SingleQuoteString,DoubleQuoteString,Separator,ExpressionEnd,Number,Boolean,Operator,ObjectAccess,Keyword,Function,Variable,SubExpression,VariableIndex" />
+		</token>
+        <token Name="ScriptExpression" MultiLine="true" IgnoreIfOnlyOneChild="true">
+			<nested_tokens names="SingleQuoteString,DoubleQuoteString,Separator,ScriptBlockComment,ScriptLineComment,CodeBlock,ExpressionEnd,Number,Boolean,Operator,ObjectAccess,Keyword,Function,Variable,SubExpression,VariableIndex" />
+		</token>
 
-        <!-- Level 5 -->
-        <token Name="expression" />
+        <!-- Level 5 DONE -->
+		<token Name="CodeBlock" StartString="\{" EndString="\}" MultiLine="true">
+			<nested_tokens names="ScriptExpression" />
+		</token>
 
-        <!-- Level 6 -->
-        <token Name="codeblock" />
+        <!-- Level 6 DONE -->
+        <token Name="SubExpression" StartString="(" EndString=")" MultiLine="true">
+			<nested_tokens names="Expression" />
+		</token>
+        <token Name="VariableIndex" StartString="\[" EndString="\]" MultiLine="true">
+			<nested_tokens names="Expression" />
+		</token>
 
-        <!-- Level 7 -->
-        <token Name="subexpression" />
-        <token Name="variableindex" />
+        <!-- Level 7 DONE -->
+        <token Name="ScriptBlockComment" StartString="\/\*" EndString="\*\/" MultiLine="true" CanHaveTextInside="true">
+			<nested_tokens names="ScriptBlockComment" />
+		</token>
 
-        <!-- Level 8 -->
-        <token Name="scriptblockcomment" MultiLine="true" />
-        <token Name="scriptlinecomment" />
-        <token Name="singlestring" />
-        <token Name="doublestring" />
-        <token Name="separator" />
-        <token Name="expressionend" />
-        <token Name="number" />
-        <token Name="boolean" />
-        <token Name="operator" />
-        <token Name="objectmember" />
-        <token Name="keyword" />
-        <token Name="function" />
-        <token Name="object" />
-        <token Name="variable" />
+        <token Name="ScriptLineComment" TokenString="//.*" CanHaveTextInside="true" />
+
+        <!-- Level 8 DONE -->
+		<token Name="SingleQuoteString" StartString="&apos;" EndString="&apos;" IgnoreParentTokenEndString="true" SearchEndStringLast="true">
+			<nested_tokens names="SharpCharacter,SharpExpression,SingleQuoteCharacter" />
+		</token>
+		<token Name="DoubleQuoteString" StartString="&quot;" EndString="&quot;" IgnoreParentTokenEndString="true" SearchEndStringLast="true">
+			<nested_tokens names="SharpCharacter,SharpExpression,DoubleQuoteCharacter" />
+		</token>
+        <token Name="Separator" TokenString="," />
+        <token Name="ExpressionEnd" TokenString=";" />
+        <token Name="Number" TokenString="[-+]?[0-9]*\.?[0-9]+" />
+        <token Name="Boolean" TokenString="(\btrue\b|\bfalse\b|\byes\b|\bno\b)" />
+        <token Name="Operator" TokenString="(\bgreater\s+than\s+or\s+equal\s+to\b|\bless\s+than\s+or\s+equal\s+to\b|\bdoes\s+not\s+contain\b|\bgreater\s+than\b|\bnot\s+equal\b|\bless\s+than\b|\bcontains\b|\bis\s+not\b|\bequal\b|\+\+|\bmod\b|\bnot\b|\band\b|\bxor\b|\beqv\b|\bgte\b|\blte\b|\bimp\b|\bneq\b|\bis\b|\bor\b|\bgt\b|\bge\b|\blt\b|\ble\b|--|\+|\*|\\|\^|&amp;&amp;|\|\|\beq\b|\?|-|/|&amp;|%|:|!|=)" OnlyAfter="" />
+        <token Name="ObjectAccess" TokenString="\." />
+        <token Name="Keyword" TokenString="(\bvar\b|\bfunction\b|\bthis\b|try\b|\bcatch\b|\bif\b|\bthen\b|\belse\b)" />
+		<token Name="Function" StartString="[a-z_]+[a-z0-9_]*[ \t]*\(" EndString="\)">
+			<nested_tokens names="Expression" />
+		</token>
+        <token Name="Variable" TokenString="[a-z_]+[a-z0-9_]*" />        
 	</tokens>
 </language>
