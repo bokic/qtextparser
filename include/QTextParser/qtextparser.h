@@ -21,50 +21,14 @@
 **
 ****************************************************************************/
 
+#include "qtextparserlanguagedefinitiontoken.h"
+#include "qtextparserlanguagedefinition.h"
+
 #include <QStringList>
 #include <QString>
 #include <QVector>
 #include <QRegExp>
-#include <QList>
 
-
-class QTextParserLanguageDefinitionToken
-{
-public:
-    QTextParserLanguageDefinitionToken() = default;
-    QTextParserLanguageDefinitionToken(const QTextParserLanguageDefinitionToken &other) = default;
-
-    inline QTextParserLanguageDefinitionToken &operator=(QTextParserLanguageDefinitionToken &&other) = default;
-    inline QTextParserLanguageDefinitionToken &operator=(const QTextParserLanguageDefinitionToken &other) = default;
-
-    QString name;
-    QRegExp startString;
-    QRegExp endString;
-    QRegExp tokenString;
-    bool searchEndStringLast;
-    bool immediateStartString;
-    bool onlyStartTag;
-    bool excludeTopLevelChild;
-    bool IgnoreIfOnlyOneChild;
-    bool MultiLine;
-    QVector<int> nestedTokens;
-};
-
-class QTextParserLanguageDefinition
-{
-public:
-    QTextParserLanguageDefinition() = default;
-    QTextParserLanguageDefinition(const QTextParserLanguageDefinition &other) = default;
-
-    inline QTextParserLanguageDefinition &operator=(QTextParserLanguageDefinition &&other) = default;
-    inline QTextParserLanguageDefinition &operator=(const QTextParserLanguageDefinition &other) = default;
-
-    QString languageName;
-    Qt::CaseSensitivity caseSensitivity;
-    QStringList defaultExtensions;
-    QVector<QTextParserLanguageDefinitionToken> tokens;
-    QVector<int> startsWith;
-};
 
 class QTextParserElement
 {
@@ -91,8 +55,10 @@ public:
     int m_StartColumn = -1;
     int m_EndLine = -1;
     int m_EndColumn = -1;
-    QList<QTextParserElement> m_ChildElements;
+    QVector<QTextParserElement> m_ChildElements;
 };
+typedef QVector<QTextParserElement> QTextParserElements;
+
 
 class QTextParserLine
 {
@@ -116,8 +82,7 @@ public:
     QTextParserLineType type;
 };
 
-typedef QList<QTextParserElement> QTextParserElements;
-typedef QList<QTextParserLine> QTextParserLines;
+typedef QVector<QTextParserLine> QTextParserLines;
 
 class QTextParser
 {

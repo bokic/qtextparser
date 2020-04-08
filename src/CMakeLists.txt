@@ -19,6 +19,7 @@ include_directories(../include)
 
 add_library(qtextparser SHARED
     qtextparser.cpp
+    qtextparserloader.cpp
 )
 
 target_link_libraries(qtextparser

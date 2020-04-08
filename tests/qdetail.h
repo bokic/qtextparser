@@ -3,8 +3,8 @@
 #include <QTextParser/QTextParser>
 #include <QTreeWidgetItem>
 #include <QDialog>
+#include <QVector>
 #include <QColor>
-#include <QList>
 
 namespace Ui
 {
@@ -36,7 +36,7 @@ private:
     QStringList m_FileLines;
 
     QTextParserElements elements;
-    QList<QColor> m_ElementTextColors;
-    QList<QColor> m_ElementBackgroundColors;
+    QVector<QColor> m_ElementTextColors;
+    QVector<QColor> m_ElementBackgroundColors;
     QString m_selectedItemString;
 };

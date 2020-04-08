@@ -5,6 +5,7 @@
 
 static QFileInfoList files;
 static int totalElements = 0;
+static int totalIterations = 0;
 
 void TestCases::initTestCase()
 {
@@ -17,6 +18,8 @@ void TestCases::initTestCase()
     filters << "*.cfm" << "*.cfc";
     d.setNameFilters(filters);
     files = d.entryInfoList();
+
+    qDebug() << "Number of files:" << files.count();
 }
 
 void TestCases::parseFiles()
@@ -31,12 +34,16 @@ void TestCases::parseFiles()
             elements = parser.parseFile(fileinfo.filePath());
             totalElements += elements.count();
         }
+
+        totalIterations++;
     }
 }
 
 void TestCases::cleanupTestCase()
 {
     qDebug() << "Total Elements:" << totalElements;
+    qDebug() << "Total Iterations:" << totalIterations;
+    qDebug() << "Elements per iteration:" << totalElements / totalIterations;
 }
 
 QTEST_MAIN(TestCases)

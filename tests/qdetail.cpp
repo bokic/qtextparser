@@ -3,7 +3,6 @@
 #include <QTextParser/QTextParser>
 #include <QDebug>
 #include <QFile>
-#include <QList>
 #include <QFont>
 
 QDetail::QDetail(QWidget *parent) :

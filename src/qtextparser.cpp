@@ -26,16 +26,16 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QFileInfo>
+#include <QVector>
 #include <QRegExp>
 #include <QDebug>
 #include <QFile>
-#include <QList>
 #include <QDir>
 
 #include <climits>
 
 
-static QList<QTextParserLanguageDefinition> languageDefinitions;
+static QVector<QTextParserLanguageDefinition> languageDefinitions;
 
 void QTextParser::loadParserDefinitionsFromDir(const QString &dir)
 {
@@ -467,7 +467,7 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
 
                 if (token.excludeTopLevelChild)
                 {
-                    QList<QTextParserElement> oldChildrens = ret.m_ChildElements;
+                    QVector<QTextParserElement> oldChildrens = ret.m_ChildElements;
 
                     ret.m_ChildElements.clear();
 
