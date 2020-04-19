@@ -22,7 +22,6 @@
 
 #include <QTextParser/QTextParser>
 
-#include <QDomDocument>
 #include <QStringList>
 #include <QTextStream>
 #include <QFileInfo>
@@ -35,235 +34,25 @@
 #include <climits>
 
 
+/* token_new:
+ * Name
+ * StartString
+ * EndString
+ * TokenString
+ * OnlyStartTag(bool)Y
+ * MultiLine(bool)Y
+ * IgnoreParentTokenEndString(bool)Y
+ * IgnoreIfOnlyOneChild(bool)Y
+ * SearchEndStringLast(bool)Y
+ ? ImmediateStartString(bool)
+ ? CanHaveTextInside(bool)
+ ? ChildrenStripWhitespaceFromName(bool)
+ ** nested_tokens
+ *** names
+ ** merge_children */
+
 static QVector<QTextParserLanguageDefinition> languageDefinitions;
 
-void QTextParser::loadParserDefinitionsFromDir(const QString &dir)
-{
-    QDir l_dir;
-
-    l_dir.setPath(dir);
-
-    QStringList l_files = l_dir.entryList(QStringList() << "*.xml");
-
-    languageDefinitions.clear();
-
-    for(const QString &l_file: l_files)
-    {
-        QDomDocument doc(l_file);
-        QVector<QString> tmpNestedTokens;
-
-        QFile file((dir) + "/" + l_file);
-
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            qDebug() << "Could not open" << l_file << "file.";
-
-            continue;
-        }
-
-        if (!doc.setContent(&file))
-        {
-            file.close();
-
-            qDebug() << "Invalid XML file" << l_file;
-
-            continue;
-        }
-
-        file.close();
-
-        if (doc.childNodes().count() == 1)
-        {
-            QDomNode language_node = doc.childNodes().at(0);
-
-            if (language_node.nodeName() == "language")
-            {
-                QTextParserLanguageDefinition def;
-
-                const QString languageName = language_node.attributes().namedItem("Name").nodeValue();
-                const QString caseSensitivity = language_node.attributes().namedItem("CaseSensitivity").nodeValue();
-                const QString defaultExtensions = language_node.attributes().namedItem("DefaultFileExtensions").nodeValue();
-                const QString startsWith = language_node.attributes().namedItem("StartsWith").nodeValue();
-
-                def.languageName = languageName;
-                def.caseSensitivity = ((caseSensitivity.compare("true", Qt::CaseInsensitive) == 0)?Qt::CaseSensitive:Qt::CaseInsensitive);
-                def.defaultExtensions = defaultExtensions.split(',');
-
-                // Iterate thru tokens
-                if (language_node.childNodes().count() == 1)
-                {
-                    QDomNode tokens_node = language_node.childNodes().at(0);
-
-                    if (tokens_node.nodeName() == "tokens")
-                    {
-                        for(int tokenIndex = 0; tokenIndex < tokens_node.childNodes().count(); tokenIndex++)
-                        {
-                            const QDomNode token_node = tokens_node.childNodes().at(tokenIndex);
-
-                            if (token_node.nodeName() != "token")
-                            {
-                                continue;
-                            }
-
-                            const QString tokenName = token_node.attributes().namedItem("Name").nodeValue();
-                            const QString tokenStartString = token_node.attributes().namedItem("StartString").nodeValue();
-                            const QString tokenEndString = token_node.attributes().namedItem("EndString").nodeValue();
-                            const QString tokenTokenString = token_node.attributes().namedItem("TokenString").nodeValue();
-                            const QString searchEndStringLast = token_node.attributes().namedItem("SearchEndStringLast").nodeValue();
-                            const QString tokenImmediateStart = token_node.attributes().namedItem("ImmediateStart").nodeValue();
-                            const QString tokenOnlyStartTag = token_node.attributes().namedItem("OnlyStartTag").nodeValue();
-                            const QString tokenExcludeTopLevelChild = token_node.attributes().namedItem("ExcludeTopLevelChild").nodeValue();
-                            const QString tokenIgnoreIfOnlyOneChild = token_node.attributes().namedItem("IgnoreIfOnlyOneChild").nodeValue();
-                            const QString tokenMultiLine = token_node.attributes().namedItem("MultiLine").nodeValue();
-                            QString tokenNestedTokens;
-                            QString tokenNestedTokensRequireAll;
-                            QString tokenNestedTokensInSameOrder;
-
-                            if (token_node.namedItem("nested_tokens").isElement())
-                            {
-                                const QDomNode nestedTokens_node = token_node.namedItem("nested_tokens");
-
-                                tokenNestedTokens = nestedTokens_node.attributes().namedItem("names").nodeValue();
-                                tokenNestedTokensRequireAll = nestedTokens_node.attributes().namedItem("require_all").nodeValue();
-                                tokenNestedTokensInSameOrder = nestedTokens_node.attributes().namedItem("require_in_same_order").nodeValue();
-                            }
-
-                            QTextParserLanguageDefinitionToken token;
-                            token.name = tokenName;
-                            token.startString = QRegExp(tokenStartString, def.caseSensitivity);
-                            token.endString = QRegExp(tokenEndString, def.caseSensitivity);
-                            token.tokenString = QRegExp(tokenTokenString, def.caseSensitivity);
-                            token.searchEndStringLast = (searchEndStringLast.compare("true", Qt::CaseInsensitive) == 0);
-                            token.immediateStartString = (tokenImmediateStart.compare("true", Qt::CaseInsensitive) == 0);
-                            token.onlyStartTag = (tokenOnlyStartTag.compare("true", Qt::CaseInsensitive) == 0);
-                            token.excludeTopLevelChild = (tokenExcludeTopLevelChild.compare("true", Qt::CaseInsensitive) == 0);
-                            token.IgnoreIfOnlyOneChild = (tokenIgnoreIfOnlyOneChild.compare("true", Qt::CaseInsensitive) == 0);
-                            token.MultiLine = (tokenMultiLine.compare("true", Qt::CaseInsensitive) == 0);
-
-                            tmpNestedTokens.append(tokenNestedTokens);
-                            def.tokens.append(token);
-                        }
-                    }
-                }
-
-                QStringList defTokens;
-                for(const auto &token: def.tokens)
-                {
-                    defTokens.append(token.name);
-                }
-
-                for(int target = 0; target < def.tokens.count(); target++)
-                {
-                    QStringList nestedTokens = tmpNestedTokens[target].split(",", QString::SkipEmptyParts);
-
-                    if (nestedTokens.isEmpty())
-                    {
-                        continue;
-                    }
-
-                    for(const auto &nestedToken: nestedTokens)
-                    {
-                        int source = defTokens.indexOf(nestedToken);
-
-                        if (source == target)
-                        {
-                            continue;
-                        }
-
-                        if (source >= 0)
-                        {
-                            def.tokens[target].nestedTokens.append(source);
-                        }
-                    }
-                }
-
-                for(const QString &tokenStr: startsWith.split(','))
-                {
-                    bool found = false;
-
-                    for(int c = 0; c < def.tokens.count(); c++)
-                    {
-                        const QTextParserLanguageDefinitionToken &token = def.tokens.at(c);
-
-                        if (token.name == tokenStr)
-                        {
-                            def.startsWith.append(c);
-
-                            found = true;
-                        }
-                    }
-
-                    if (found == false)
-                    {
-                        qDebug() << "Parser error. Can\'t find token(" << tokenStr << "). File:" << __FILE__ << ", line:" << __LINE__;
-                    }
-                }
-
-                languageDefinitions.append(def);
-            }
-            else
-            {
-                qDebug() << "XML root tag is not language, but" << ("[" + language_node.nodeName() + "]") << "for file" << l_file;
-            }
-        }
-        else
-        {
-            qDebug() << "There are" << doc.childNodes().count() << "tags in XML root. There should be only 1. For file" << l_file;
-        }
-    }
-}
-
-void QTextParser::setTextTypeByFileExtension(const QString &fileExt)
-{
-    if (languageDefinitions.count() == 0)
-    {
-        QTextParser::loadParserDefinitionsFromDir(".");
-    }
-
-    bool found = false;
-
-    for(int c = 0; c < languageDefinitions.count(); c++)
-    {
-        QStringList exts = languageDefinitions.at(c).defaultExtensions;
-
-        if (exts.contains(fileExt))
-        {
-            language = languageDefinitions.at(c);
-            found = true;
-            break;
-        }
-    }
-
-    if (!found)
-    {
-        language = QTextParserLanguageDefinition();
-    }
-}
-
-void QTextParser::setTextTypeByLanguageName(const QString &langName)
-{
-    if (languageDefinitions.count() == 0)
-    {
-        QTextParser::loadParserDefinitionsFromDir(".");
-    }
-
-    bool found = false;
-
-    for(int c = 0; c < languageDefinitions.count(); c++)
-    {
-        if (languageDefinitions.at(c).languageName.compare(langName, Qt::CaseInsensitive) == 0)
-        {
-            language = languageDefinitions.at(c);
-            found = true;
-            break;
-        }
-    }
-
-    if (!found)
-    {
-        language = QTextParserLanguageDefinition();
-    }
-}
 
 QTextParserElements QTextParser::parseFile(const QString &fileName)
 {
@@ -292,7 +81,7 @@ QTextParserElements QTextParser::parseFile(const QString &fileName)
 
         QString fileExtension = finfo.suffix();
 
-        setTextTypeByFileExtension(fileExtension);
+        //setTextTypeByFileExtension(fileExtension);
 
         ret = parseTextLines(fileLines);
     }
@@ -305,7 +94,7 @@ QTextParserElements QTextParser::parseText(const QString &text, const QString &f
     QTextParserElements ret;
     QTextParserLines fileLines;
 
-    setTextTypeByFileExtension(fileExt);
+    //setTextTypeByFileExtension(fileExt);
 
     for(const QString &curline: text.split(QRegExp("(\r\n|\n\r|\r|\n)")))
     {
@@ -448,7 +237,7 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
                         ret.m_ChildElements.append(child);
                     }
 
-                    if ((token.MultiLine == false)||(child.m_Type == -1))
+                    if ((token.multiLine == false)||(child.m_Type == -1))
                     {
                         break;
                     }
@@ -465,7 +254,7 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
                     start_column = 0;
                 }
 
-                if (token.excludeTopLevelChild)
+                /*if (token.excludeTopLevelChild)
                 {
                     QVector<QTextParserElement> oldChildrens = ret.m_ChildElements;
 
@@ -479,7 +268,7 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
                         }
                     }
                 }
-                else if (token.IgnoreIfOnlyOneChild)
+                else*/ if (token.ignoreIfOnlyOneChild)
                 {
                     if (ret.m_ChildElements.count() == 1)
                     {
@@ -544,7 +333,7 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
                 ret.m_EndLine = start_line;
                 ret.m_EndColumn = start_column;
                 ret.m_Type = nToken;
-                if (token.IgnoreIfOnlyOneChild)
+                if (token.ignoreIfOnlyOneChild)
                 {
                     if (ret.m_ChildElements.count() == 1)
                     {

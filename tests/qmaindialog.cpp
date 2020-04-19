@@ -14,7 +14,7 @@ QMainDialog::QMainDialog(QWidget *parent, Qt::WindowFlags flags)
     ui.setupUi(this);
     setWindowFlags(windowFlags() | Qt::WindowMinMaxButtonsHint);
 
-    QTextParser::loadParserDefinitionsFromDir("../definitions");
+    //QTextParser::loadParserDefinitionsFromDir("../definitions");
 }
 
 void QMainDialog::parseDir(const QString &dir)

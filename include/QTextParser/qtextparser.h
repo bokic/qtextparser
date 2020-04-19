@@ -93,9 +93,9 @@ public:
     inline QTextParser &operator=(QTextParser &&other) = default;
     inline QTextParser &operator=(const QTextParser &other) = default;
 
-    static void loadParserDefinitionsFromDir(const QString &dir);
-    void setTextTypeByFileExtension(const QString &fileExt);
-    void setTextTypeByLanguageName(const QString &langName);
+    //static void loadParserDefinitionsFromDir(const QString &dir);
+    //void setTextTypeByFileExtension(const QString &fileExt);
+    //void setTextTypeByLanguageName(const QString &langName);
     QTextParserElements parseFile(const QString &fileName);
     QTextParserElements parseText(const QString &text, const QString &fileExt);
     QTextParserElements parseTextLines(const QTextParserLines &lines);

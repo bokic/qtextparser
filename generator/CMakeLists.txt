@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(qtextparser LANGUAGES CXX)
+project(generator LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
@@ -13,19 +13,24 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../bin")
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+exec_program(
+    "git"
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ARGS "describe --tags"
+    OUTPUT_VARIABLE PROJECT_GIT_VERSION )
+
+find_package(Qt5 COMPONENTS Core Xml REQUIRED)
 
 include_directories(../include)
 
-add_library(qtextparser SHARED
-    qtextparser.cpp
+add_definitions( -DPROJECT_GIT_VERSION="${PROJECT_GIT_VERSION}" )
+
+add_executable(generator
+    ../src/qtextparserloader.cpp
+    generator.cpp
 )
 
-target_link_libraries(qtextparser
+target_link_libraries(generator
     Qt5::Core
-)
-
-set_target_properties(qtextparser PROPERTIES
-    VERSION "0.5"
-    SOVERSION "0"
+    Qt5::Xml
 )

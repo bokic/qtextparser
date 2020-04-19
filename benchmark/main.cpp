@@ -1,4 +1,5 @@
 #include "main.h"
+#include <QTextParser/QTextParserLoader>
 #include <QTextParser/QTextParser>
 #include <QTest>
 
@@ -9,7 +10,7 @@ static int totalIterations = 0;
 
 void TestCases::initTestCase()
 {
-    QTextParser::loadParserDefinitionsFromDir("../definitions");
+    QTextParserLoader::loadDefinitionsFromDir(QDir("../definitions"));
 
     QDir d;
     d.setFilter(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);

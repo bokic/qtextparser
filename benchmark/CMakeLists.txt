@@ -13,16 +13,18 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../bin")
 
-find_package(Qt5 COMPONENTS Core Test REQUIRED)
+find_package(Qt5 COMPONENTS Core Xml Test REQUIRED)
 
 include_directories(../include)
 
 add_executable(benchmark
+    ../src/qtextparserloader.cpp
     main.cpp
 )
 
 target_link_libraries(benchmark
     Qt5::Core
+    Qt5::Xml
     Qt5::Test
     qtextparser
 )
