@@ -26,6 +26,6 @@ target_link_libraries(qtextparser
 )
 
 set_target_properties(qtextparser PROPERTIES
-    VERSION "0.5"
+    VERSION "0.9"
     SOVERSION "0"
 )
