@@ -76,7 +76,7 @@ void QMainDialog::on_pushButton_clicked()
 
     ui.listWidget->addItem(new QListWidgetItem("-------------------- CF Tags stats -------------------------"));
 
-    keys = m_tagsHash.uniqueKeys();
+    keys = m_tagsHash.keys();
     keys.sort();
 
     for (const QString &key: keys)
@@ -86,7 +86,7 @@ void QMainDialog::on_pushButton_clicked()
 
     ui.listWidget->addItem(new QListWidgetItem("-------------------- CF Functions stats -------------------------"));
 
-    keys = m_functionsHash.uniqueKeys();
+    keys = m_functionsHash.keys();
     keys.sort();
 
     for (const QString &key: keys)
