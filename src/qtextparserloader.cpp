@@ -54,7 +54,8 @@ namespace QTextParserLoader
                 ret.emptySegmentsLanguage = languageEmptySegmentsLanguage;
                 ret.caseSensitivity = languageCaseSensitivity.compare("true", Qt::CaseInsensitive) == 0? Qt::CaseSensitive: Qt::CaseInsensitive;
 
-                for(const auto &defaultExtension: languageDefaultExtensions.split(','))
+                auto defExtensions = languageDefaultExtensions.split(',');
+                for(const auto &defaultExtension: qAsConst(defExtensions))
                 {
                     ret.defaultExtensions.append(defaultExtension.trimmed());
                 }
@@ -171,7 +172,8 @@ namespace QTextParserLoader
                     }
                 }
 
-                for(const QString &startToken: languageStartsWith.split(','))
+                auto startTokens = languageStartsWith.split(',');
+                for(const QString &startToken: qAsConst(startTokens))
                 {
                     int tokenIndex = ret.tokenNames.indexOf(startToken);
 
