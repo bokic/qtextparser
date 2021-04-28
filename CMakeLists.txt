@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+
 project(qtextparser)
 
 add_subdirectory(src)
