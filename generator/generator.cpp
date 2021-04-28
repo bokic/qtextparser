@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     if (argc != 2)
     {
-        cout() << "Usage generator <language_definition.xml>" << endl;
+        cout() << "Usage generator <language_definition.xml>" << Qt::endl;
         return 1;
     }
 
@@ -44,19 +44,19 @@ int main(int argc, char *argv[])
     QTextStream outStream(&outFile);
     outStream.setCodec("UTF-8");
 
-    outStream << "// Generated with qtextparser generator(" << PROJECT_GIT_VERSION << ") @ " << QDateTime::currentDateTime().toString(Qt::ISODate) << endl;
-    outStream << endl;
+    outStream << "// Generated with qtextparser generator(" << PROJECT_GIT_VERSION << ") @ " << QDateTime::currentDateTime().toString(Qt::ISODate) << Qt::endl;
+    outStream << Qt::endl;
 
-    outStream << "#pragma once" << endl;
-    outStream << endl;
+    outStream << "#pragma once" << Qt::endl;
+    outStream << Qt::endl;
 
-    outStream << "#include <QTextParser/QTextParserLanguageDefinition>" << endl;
-    outStream << endl;
-    outStream << endl;
+    outStream << "#include <QTextParser/QTextParserLanguageDefinition>" << Qt::endl;
+    outStream << Qt::endl;
+    outStream << Qt::endl;
 
-    outStream << "namespace QTextParserXmlLanguageDefinition {"<< endl;
+    outStream << "namespace QTextParserXmlLanguageDefinition {"<< Qt::endl;
 
-    outStream << "    QTextParserLanguageDefinition " << languageDef.name << "_QTextParserLanguageDefinition {" << endl;
+    outStream << "    QTextParserLanguageDefinition " << languageDef.name << "_QTextParserLanguageDefinition {" << Qt::endl;
 
     QString defaultExtensions;
     for(int c = 0; c < languageDef.defaultExtensions.length(); c++)
@@ -80,13 +80,13 @@ int main(int argc, char *argv[])
 
     languageSensitivity = languageDef.caseSensitivity? "Qt::CaseSensitive": "Qt::CaseInsensitive";
 
-    outStream << "        .name = \"" << languageDef.name << "\"," << endl;
-    outStream << "        .description = \"" << languageDef.description << "\"," << endl;
-    outStream << "        .version = \"" << languageDef.version << "\"," << endl;
-    outStream << "        .emptySegmentsLanguage = \"" << languageDef.emptySegmentsLanguage << "\"," << endl;
-    outStream << "        .caseSensitivity = " << languageSensitivity << "," << endl;
-    outStream << "        .defaultExtensions = {" << defaultExtensions << "}," << endl;
-    outStream << "        .tokens = {" << endl;
+    outStream << "        .name = \"" << languageDef.name << "\"," << Qt::endl;
+    outStream << "        .description = \"" << languageDef.description << "\"," << Qt::endl;
+    outStream << "        .version = \"" << languageDef.version << "\"," << Qt::endl;
+    outStream << "        .emptySegmentsLanguage = \"" << languageDef.emptySegmentsLanguage << "\"," << Qt::endl;
+    outStream << "        .caseSensitivity = " << languageSensitivity << "," << Qt::endl;
+    outStream << "        .defaultExtensions = {" << defaultExtensions << "}," << Qt::endl;
+    outStream << "        .tokens = {" << Qt::endl;
 
     for(const auto token: languageDef.tokens)
     {
@@ -94,25 +94,25 @@ int main(int argc, char *argv[])
         QString pushAndContinueWithTokens;
         QString mergeChildren;
 
-        outStream << "            {" << endl;
+        outStream << "            {" << Qt::endl;
 
-        outStream << "                .name = \"" << token.name << "\"," << endl;
+        outStream << "                .name = \"" << token.name << "\"," << Qt::endl;
 
-        outStream << "                .startString = QRegExp(R\"(" << token.startString.pattern() << ")\", " << languageSensitivity << ")," << endl;
-        outStream << "                .endString = QRegExp(R\"(" << token.endString.pattern() << ")\", " << languageSensitivity << ")," << endl;
-        outStream << "                .tokenString = QRegExp(R\"(" << token.tokenString.pattern() << ")\", " << languageSensitivity << ")," << endl;
+        outStream << "                .startString = QRegExp(R\"(" << token.startString.pattern() << ")\", " << languageSensitivity << ")," << Qt::endl;
+        outStream << "                .endString = QRegExp(R\"(" << token.endString.pattern() << ")\", " << languageSensitivity << ")," << Qt::endl;
+        outStream << "                .tokenString = QRegExp(R\"(" << token.tokenString.pattern() << ")\", " << languageSensitivity << ")," << Qt::endl;
 
-        outStream << "                .mergeChildrenStripWhitespaceFromName = " << (token.mergeChildrenStripWhitespaceFromName? "true": "false") << "," << endl;
-        outStream << "                .canHaveTextInside = " << (token.canHaveTextInside? "true": "false") << "," << endl;
-        outStream << "                .searchEndStringLast = " << (token.searchEndStringLast? "true": "false") << "," << endl;
-        outStream << "                .immediateStartString = " << (token.immediateStartString? "true": "false") << "," << endl;
-        outStream << "                .onlyStartTag = " << (token.onlyStartTag? "true": "false") << "," << endl;
-        outStream << "                .ignoreIfOnlyOneChild = " << (token.ignoreIfOnlyOneChild? "true": "false") << "," << endl;
-        outStream << "                .ignoreParentTokenEndString = " << (token.ignoreParentTokenEndString? "true": "false") << "," << endl;
-        outStream << "                .multiLine = " << (token.multiLine? "true": "false") << "," << endl;
-        outStream << "                .childrenStripWhitespaceFromName = " << (token.childrenStripWhitespaceFromName? "true": "false") << "," << endl;
+        outStream << "                .mergeChildrenStripWhitespaceFromName = " << (token.mergeChildrenStripWhitespaceFromName? "true": "false") << "," << Qt::endl;
+        outStream << "                .canHaveTextInside = " << (token.canHaveTextInside? "true": "false") << "," << Qt::endl;
+        outStream << "                .searchEndStringLast = " << (token.searchEndStringLast? "true": "false") << "," << Qt::endl;
+        outStream << "                .immediateStartString = " << (token.immediateStartString? "true": "false") << "," << Qt::endl;
+        outStream << "                .onlyStartTag = " << (token.onlyStartTag? "true": "false") << "," << Qt::endl;
+        outStream << "                .ignoreIfOnlyOneChild = " << (token.ignoreIfOnlyOneChild? "true": "false") << "," << Qt::endl;
+        outStream << "                .ignoreParentTokenEndString = " << (token.ignoreParentTokenEndString? "true": "false") << "," << Qt::endl;
+        outStream << "                .multiLine = " << (token.multiLine? "true": "false") << "," << Qt::endl;
+        outStream << "                .childrenStripWhitespaceFromName = " << (token.childrenStripWhitespaceFromName? "true": "false") << "," << Qt::endl;
 
-        outStream << "                .closeToken = " << QString::number(token.closeToken) << "," << endl;
+        outStream << "                .closeToken = " << QString::number(token.closeToken) << "," << Qt::endl;
 
         for(int c = 0; c < token.nestedTokens.count(); c++)
         {
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
             }
             nestedTokens.append(QString::number(token.nestedTokens[c]));
         }
-        outStream << "                .nestedTokens = {" << nestedTokens << "}," << endl;
+        outStream << "                .nestedTokens = {" << nestedTokens << "}," << Qt::endl;
 
         for(int c = 0; c < token.pushAndContinueWithTokens.count(); c++)
         {
@@ -132,28 +132,28 @@ int main(int argc, char *argv[])
             }
             pushAndContinueWithTokens.append(QString::number(token.pushAndContinueWithTokens[c]));
         }
-        outStream << "                .pushAndContinueWithTokens = {" << pushAndContinueWithTokens << "}," << endl;
+        outStream << "                .pushAndContinueWithTokens = {" << pushAndContinueWithTokens << "}," << Qt::endl;
 
-        outStream << "                .mergeChildren = {" << endl;
+        outStream << "                .mergeChildren = {" << Qt::endl;
         for(int c = 0; c < token.mergeChildren.count(); c++)
         {
             const auto &child = token.mergeChildren.at(c);
 
-            outStream << "                    {" << endl;
-            outStream << "                        .name = \"" << child.name << "\"," << endl;
-            outStream << "                        .fromToken = \"" << child.fromToken << "\"," << endl;
-            outStream << "                        .isNameRegex = " << (child.isNameRegex? "true": "false") << "," << endl;
-            outStream << "                    }," << endl;
+            outStream << "                    {" << Qt::endl;
+            outStream << "                        .name = \"" << child.name << "\"," << Qt::endl;
+            outStream << "                        .fromToken = \"" << child.fromToken << "\"," << Qt::endl;
+            outStream << "                        .isNameRegex = " << (child.isNameRegex? "true": "false") << "," << Qt::endl;
+            outStream << "                    }," << Qt::endl;
         }
-        outStream << "                }," << endl;
-        outStream << "            }," << endl;
+        outStream << "                }," << Qt::endl;
+        outStream << "            }," << Qt::endl;
     }
 
-    outStream << "        }," << endl;
-    outStream << "        .startsWith = {" << startsWith << "}" << endl;
-    outStream << "    };"<< endl;
+    outStream << "        }," << Qt::endl;
+    outStream << "        .startsWith = {" << startsWith << "}" << Qt::endl;
+    outStream << "    };"<< Qt::endl;
 
-    outStream << "}"<< endl;
+    outStream << "}"<< Qt::endl;
 
     QRegExp tt("", Qt::CaseSensitive, QRegExp::RegExp);
 
