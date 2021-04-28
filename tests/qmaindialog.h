@@ -12,7 +12,7 @@ class QMainDialog : public QDialog
     Q_OBJECT
 
 public:
-    QMainDialog(QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr);
+    QMainDialog();
 
 private:
     void parseDir(const QString &dir);

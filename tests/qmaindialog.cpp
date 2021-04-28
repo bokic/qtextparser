@@ -8,8 +8,8 @@
 #include <QColor>
 #include <QDir>
 
-QMainDialog::QMainDialog(QWidget *parent, Qt::WindowFlags flags)
-    : QDialog(parent, flags)
+QMainDialog::QMainDialog()
+    : QDialog()
 {
     ui.setupUi(this);
     setWindowFlags(windowFlags() | Qt::WindowMinMaxButtonsHint);
