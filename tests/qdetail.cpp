@@ -31,13 +31,18 @@ void QDetail::setFileForParsing(const QString &file)
 {
     m_Parser = QTextParser();
 
-    elements = m_Parser.parseFile(file);
+    if (!m_Parser.parseFile(file))
+    {
+        return;
+    }
+
+    elements = m_Parser.parserElements();
 
     m_ElementTextColors.clear();
     m_ElementBackgroundColors.clear();
 
-    auto tokens = m_Parser.getLanguage().tokens;
-    for(const auto &token: tokens)
+    auto tokens = m_Parser.language().tokens;
+    for(const auto &token: qAsConst(tokens))
     {
         if ((token.name == "StartTag")||(token.name == "ScriptTag")||(token.name == "OutputTag")||(token.name == "EndTag"))
         {
@@ -174,7 +179,7 @@ void QDetail::setFileForParsing(const QString &file)
 
         QTreeWidgetItem *widgetItem = new QTreeWidgetItem();
 
-        QString text = m_Parser.getLanguage().tokens.at(element.m_Type).name;
+        QString text = m_Parser.language().tokens.at(element.m_Type).name;
 
         if (!element.m_Text.isEmpty())
         {
@@ -204,7 +209,7 @@ void QDetail::addSubTrees(const QTextParserElement &element, QTreeWidgetItem *wi
 
         QTreeWidgetItem *child = new QTreeWidgetItem();
 
-        QString text = m_Parser.getLanguage().tokens.at(childElement.m_Type).name;
+        QString text = m_Parser.language().tokens.at(childElement.m_Type).name;
 
         if (!childElement.m_Text.isEmpty())
         {

@@ -51,13 +51,27 @@
  *** names
  ** merge_children */
 
-static QVector<QTextParserLanguageDefinition> languageDefinitions;
-
-
-QTextParserElements QTextParser::parseFile(const QString &fileName)
+QTextParserLanguageDefinition QTextParser::language() const
 {
-    QTextParserElements ret;
+    return m_language;
+}
+
+void QTextParser::setLanguage(const QTextParserLanguageDefinition &language)
+{
+    m_language = language;
+}
+
+QTextParserElements QTextParser::parserElements() const
+{
+    return m_parserElements;
+}
+
+bool QTextParser::parseFile(const QString &fileName)
+{
     QFileInfo finfo(fileName);
+
+    m_lines.clear();
+    m_parserElements.clear();
 
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly))
@@ -81,22 +95,20 @@ QTextParserElements QTextParser::parseFile(const QString &fileName)
 
         QString fileExtension = finfo.suffix();
 
-        //setTextTypeByFileExtension(fileExtension);
+        //setTextTypeByFileExtension(fileExtension); // TODO: Set language.
 
-        ret = parseTextLines(fileLines);
+        return parseTextLines(fileLines);
     }
 
-    return ret;
+    return false;
 }
 
-QTextParserElements QTextParser::parseText(const QString &text, const QString &fileExt)
+bool QTextParser::parseText(const QString &text)
 {
-    QTextParserElements ret;
     QTextParserLines fileLines;
 
-    //setTextTypeByFileExtension(fileExt);
-
-    for(const QString &curline: text.split(QRegExp("(\r\n|\n\r|\r|\n)")))
+    auto lines = text.split(QRegExp("(\r\n|\n\r|\r|\n)"));
+    for(const QString &curline: qAsConst(lines))
     {
         QTextParserLine line;
         line.text = curline;
@@ -106,52 +118,46 @@ QTextParserElements QTextParser::parseText(const QString &text, const QString &f
 
     fileLines.last().type = QTextParserLine::QTextParserLineTypeNoEndLine;
 
-    ret = parseTextLines(fileLines);
-
-    return ret;
+    return parseTextLines(fileLines);
 }
 
-QTextParserElements QTextParser::parseTextLines(const QTextParserLines &lines)
+bool QTextParser::parseTextLines(const QTextParserLines &lines)
 {
-    QTextParserElements ret;
-
-    this->lines = lines;
-
-    if (lines.count() <= 0)
+    if (lines.isEmpty())
     {
-        return ret;
+        m_lines = lines;
+        m_parserElements.clear();
+
+        return true;
     }
 
-    int cur_lines = 0;
-    int cur_column = 0;
-
-    int end_lines = lines.count() - 1;
-
-    while(true)
-    {
-        if (!findFirstElement(lines, cur_lines, cur_column, language.startsWith, -1))
-        {
-            break;
-        }
-
-        int end_column = lines.at(cur_lines).text.length();
-
-        QTextParserElement token = parseElement(lines, language.startsWith, cur_lines, cur_column, end_lines, end_column);
-
-        ret.append(token);
-
-        if (token.m_Type < 0)
-        {
-            break;
-        }
-    }
-
-    return ret;
+    return parseTextLines(lines, 0, lines.length() - 1);
 }
 
-QTextParserLanguageDefinition QTextParser::getLanguage() const
+bool QTextParser::parseTextLines(const QTextParserLines &lines, int start, int end)
 {
-    return language;
+    int start_line = 0;
+    int start_column = 0;
+    int end_line = 0;
+    int end_column = 0;
+
+    if ((lines.count() <= end)||(end < start))
+    {
+        return false;
+    }
+
+    start_line = start;
+    start_column = 0;
+    end_line = end;
+    end_column = lines[end_line].text.length();
+
+    forever
+    {
+        // TODO: Continue here!
+        break;
+    }
+
+    return true;
 }
 
 QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, const QVector<int> &tokens, int &start_line, int &start_column, int end_line, int end_column, int end_token)
@@ -169,7 +175,7 @@ QTextParserElement QTextParser::parseElement(const QTextParserLines &lines, cons
         return ret;
     }
 
-    const QVector<QTextParserLanguageDefinitionToken> &tokenList = language.tokens;
+    const QVector<QTextParserLanguageDefinitionToken> &tokenList = m_language.tokens;
 
     if (end_token >= 0)
     {
@@ -438,14 +444,14 @@ bool QTextParser::findFirstElement(const QString &line, int &cur_column, const Q
     {
         while(true)
         {
-            if (language.tokens.count() <= end_token)
+            if (m_language.tokens.count() <= end_token)
             {
-                qDebug() << "tokens.key count("<< language.tokens.count() << ") is too low. At least" << (end_token + 1) << "needed. File:" << __FILE__ << ", line:" << __LINE__;
+                qDebug() << "tokens.key count("<< m_language.tokens.count() << ") is too low. At least" << (end_token + 1) << "needed. File:" << __FILE__ << ", line:" << __LINE__;
 
                 break;
             }
 
-            const QRegExp &reg = language.tokens.at(end_token).endString;
+            const QRegExp &reg = m_language.tokens.at(end_token).endString;
             int index = reg.indexIn(line, cur_column);
 
             if (index < 0)
@@ -463,9 +469,9 @@ bool QTextParser::findFirstElement(const QString &line, int &cur_column, const Q
     for (int c = 0; c < tokens.count(); c++)
     {
         int nToken = tokens.at(c);
-        const QTextParserLanguageDefinitionToken &token = language.tokens.at(nToken);
+        const QTextParserLanguageDefinitionToken &token = m_language.tokens.at(nToken);
 
-        if ((nToken < 0)||(nToken >= language.tokens.count()))
+        if ((nToken < 0)||(nToken >= m_language.tokens.count()))
         {
             qDebug() << "Token out of range(" << nToken << "). File:" << __FILE__ << ", line:" << __LINE__;
             continue;

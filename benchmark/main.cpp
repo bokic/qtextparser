@@ -10,8 +10,6 @@ static int totalIterations = 0;
 
 void TestCases::initTestCase()
 {
-    QTextParserLoader::loadDefinitionsFromDir(QDir("../definitions"));
-
     QDir d;
     d.setFilter(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
     d.setSorting(QDir::DirsFirst | QDir::Name);
@@ -23,17 +21,34 @@ void TestCases::initTestCase()
     qDebug() << "Number of files:" << files.count();
 }
 
-void TestCases::parseFiles()
+void TestCases::benchmarkLoadFromXML()
 {
-    QTextParserElements elements;
-    QTextParser parser;
+    QTextParserLanguageDefinition CFMLlanguageDefinition;
 
     QBENCHMARK
     {
-        for(const auto &fileinfo: files)
+        CFMLlanguageDefinition = QTextParserLoader::loadDefinitionFromXmlFile("../definitions/ColdFusion.xml");
+    }
+}
+
+void TestCases::parseFiles()
+{
+    QTextParserLanguageDefinition CFMLlanguageDefinition;
+    QTextParserElements elements;
+    QTextParser parser;
+
+    CFMLlanguageDefinition = QTextParserLoader::loadDefinitionFromXmlFile("../definitions/ColdFusion.xml");
+
+    parser.setLanguage(CFMLlanguageDefinition);
+
+    QBENCHMARK
+    {
+        for(const auto &fileinfo: qAsConst(files))
         {
-            elements = parser.parseFile(fileinfo.filePath());
-            totalElements += elements.count();
+            if (parser.parseFile(fileinfo.filePath()))
+            {
+                totalElements += parser.parserElements().count();
+            }
         }
 
         totalIterations++;

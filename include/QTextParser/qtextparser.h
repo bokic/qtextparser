@@ -89,22 +89,25 @@ class QTextParser
 public:
     QTextParser() = default;
     QTextParser(const QTextParser &other) = default;
-
     inline QTextParser &operator=(QTextParser &&other) = default;
     inline QTextParser &operator=(const QTextParser &other) = default;
 
-    //static void loadParserDefinitionsFromDir(const QString &dir);
-    //void setTextTypeByFileExtension(const QString &fileExt);
-    //void setTextTypeByLanguageName(const QString &langName);
-    QTextParserElements parseFile(const QString &fileName);
-    QTextParserElements parseText(const QString &text, const QString &fileExt);
-    QTextParserElements parseTextLines(const QTextParserLines &lines);
-    QTextParserLanguageDefinition getLanguage() const;
+    QTextParserLanguageDefinition language() const;
+    void setLanguage(const QTextParserLanguageDefinition &language);
+    QTextParserElements parserElements() const;
+
+    bool parseFile(const QString &fileName);
+    bool parseText(const QString &text);
+    bool parseTextLines(const QTextParserLines &m_lines);
+    bool parseTextLines(const QTextParserLines &lines, int start, int end);
 
 protected:
-    QTextParserElement parseElement(const QTextParserLines &lines, const QVector<int> &tokens, int &start_line, int &start_column, int end_line, int end_column, int end_token = -1);
-    bool findFirstElement(const QTextParserLines &lines, int &cur_line, int &cur_column, const QVector<int> &tokens, int end_token);
+    QTextParserElement parseElement(const QTextParserLines &m_lines, const QVector<int> &tokens, int &start_line, int &start_column, int end_line, int end_column, int end_token = -1);
+    bool findFirstElement(const QTextParserLines &m_lines, int &cur_line, int &cur_column, const QVector<int> &tokens, int end_token);
     bool findFirstElement(const QString &line, int &cur_column, const QVector<int> &tokens, int end_token);
-    QTextParserLanguageDefinition language;
-    QTextParserLines lines;
+
+    // Variable members
+    QTextParserLanguageDefinition m_language;
+    QTextParserElements m_parserElements;
+    QTextParserLines m_lines;
 };

@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     outStream << "        .defaultExtensions = {" << defaultExtensions << "}," << Qt::endl;
     outStream << "        .tokens = {" << Qt::endl;
 
-    for(const auto token: languageDef.tokens)
+    for(const auto &token: qAsConst(languageDef.tokens))
     {
         QString nestedTokens;
         QString pushAndContinueWithTokens;

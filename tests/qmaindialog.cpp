@@ -79,7 +79,7 @@ void QMainDialog::on_pushButton_clicked()
     keys = m_tagsHash.keys();
     keys.sort();
 
-    for (const QString &key: keys)
+    for (const QString &key: qAsConst(keys))
     {
         ui.listWidget->addItem(new QListWidgetItem(key + " = " + QString::number(m_tagsHash[key])));
     }
@@ -89,7 +89,7 @@ void QMainDialog::on_pushButton_clicked()
     keys = m_functionsHash.keys();
     keys.sort();
 
-    for (const QString &key: keys)
+    for (const QString &key: qAsConst(keys))
     {
         ui.listWidget->addItem(new QListWidgetItem(key + " = " + QString::number(m_functionsHash[key])));
     }

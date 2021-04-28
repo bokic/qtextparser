@@ -8,6 +8,7 @@ class TestCases : public QObject
     Q_OBJECT
 private slots:
     void initTestCase();
+    void benchmarkLoadFromXML();
     void parseFiles();
     void cleanupTestCase();
 
